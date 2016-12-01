@@ -5,13 +5,15 @@
  */
 package mytunes.gui.controller;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -31,7 +33,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import mytunes.be.Song;
 import mytunes.bll.SongManager;
 import mytunes.gui.model.SongModel;
@@ -166,6 +167,7 @@ public class MainViewController implements Initializable
         colRating.setCellValueFactory(new PropertyValueFactory<>("rating"));
         setSongs();
         tableSongs.setItems(songs);
+        initialLoad();
         isPlaying = false;
     }
 
@@ -295,6 +297,19 @@ public class MainViewController implements Initializable
     @FXML
     private void update(){
        tableSongs.setItems((ObservableList<Song>) songModel.getSongs());
+    }
+    
+    private void initialLoad()
+    {
+                try
+        {
+            songModel.loadSongData();
+        } catch (FileNotFoundException ex)
+        {
+            System.out.println("FUCK YOU");
+            Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
 

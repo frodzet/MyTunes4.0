@@ -15,6 +15,8 @@ import mytunes.be.Song;
  * @author James
  */
 public class SongModel {
+    
+    private Song contextSong;
 
     
     private static SongModel instance;
@@ -40,6 +42,24 @@ public class SongModel {
         songs.add(song);
 
     }
+    
+    public void editSong(Song contextSong){
+        for (int i = 0; i < songs.size()-1; i++) {
+            Song song = songs.get(i);
+             if (song.getTitle() == contextSong.getTitle()){
+                int songIndex = i;
+                song.setTitle(contextSong.getTitle());
+                song.setArtist(contextSong.getArtist());
+            }
+            
+            
+        }
+            
+        }
+           
+            
+        
+    
 
     public List<Song> getSongs()
     {
@@ -50,6 +70,17 @@ public class SongModel {
     {
         
     }
+    
+    public Song getContextSong(){
+        return contextSong;
+     
+    }
+
+    public void setContextSong(Song contextSong) {
+        this.contextSong = contextSong;
+    }
+    
+    
     
     
 

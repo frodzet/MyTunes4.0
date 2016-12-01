@@ -76,7 +76,7 @@ public class MainViewController implements Initializable
     @FXML
     private MenuBar menuBar;
     @FXML
-    private Button btnTest;
+    private Button nextButton;
 
     @FXML
     public void handleAddSongButton() throws IOException
@@ -243,5 +243,10 @@ public class MainViewController implements Initializable
 
         lblSongDuration.setText(selectedSong.getDuration());
         lblSongPlaying.setText(selectedSong.getTitle());
+    }
+    
+    public void nextButton()
+    {
+        songManager.playNextSong(songs);
     }
 }

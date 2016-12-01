@@ -6,6 +6,8 @@
 package mytunes.gui.model;
 
 import java.util.List;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mytunes.be.Playlist;
@@ -20,6 +22,7 @@ public class PlaylistModel {
     private static PlaylistModel instance;
 
     ObservableList<Playlist> playlists = FXCollections.observableArrayList();
+    ObservableList playlistTitles = FXCollections.observableArrayList();
 
     public static PlaylistModel getInstance()
     {
@@ -39,25 +42,30 @@ public class PlaylistModel {
         playlists.add(playlist);
     }
 
-    public List<Playlist> getPlaylists()
+    public ObservableList<Playlist> getPlaylists()
     {
         return playlists;
     }
-    
 
-    public List<String> getPlaylistTitles()
+    public void setPlaylistTitles()
     {
-        List<String> playlistTitles = null;
+        playlistTitles.clear();
         for (Playlist playlist : playlists)
         {
             playlistTitles.add(playlist.getTitle());
         }
+
+    }
+
+    public ObservableList<String> getPlaylistTitles()
+    {
+        setPlaylistTitles();
         return playlistTitles;
     }
 
     public void updatePlaylistView()
     {
-        
+
     }
 
 }

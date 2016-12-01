@@ -119,6 +119,10 @@ public class MainViewController implements Initializable
                 songManager.playSong(selectedSong, false);
                 lblSongPlaying.setText(selectedSong.getTitle() + " is playing");
             }
+            else
+            {
+                return;
+            }
         }
         else
         {

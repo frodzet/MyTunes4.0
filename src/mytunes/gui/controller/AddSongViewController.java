@@ -101,6 +101,7 @@ public class AddSongViewController implements Initializable
 
         song = new Song(title, artist, genre, duration, 0, path);
         songModel.addSong(song);
+        songModel.saveSongData();
         closeWindow();
 
     }

@@ -7,12 +7,13 @@ package mytunes.be;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.io.Serializable;
 
 /**
  *
  * @author Simon Birkedal
  */
-public class Playlist
+public class Playlist implements Serializable
 {
     private int id;
     private String title;

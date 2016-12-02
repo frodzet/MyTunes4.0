@@ -6,27 +6,39 @@
 package mytunes;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import mytunes.gui.model.SongModel;
 
 /**
  *
  * @author Simon Birkedal
  */
-public class MyTunes extends Application
-{
+public class MyTunes extends Application {
     
+    private SongModel songModel;
+
     @Override
     public void start(Stage stage) throws Exception
     {
         Parent root = FXMLLoader.load(getClass().getResource("gui/view/MainView.fxml"));
-        
+
         Scene scene = new Scene(root);
-        
+
         stage.setScene(scene);
         stage.show();
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(final WindowEvent arg0)
+            {
+                songModel.getInstance().saveSongData();
+                System.exit(0);
+            }
+        });
     }
 
     /**
@@ -37,4 +49,5 @@ public class MyTunes extends Application
         launch(args);
     }
     
+
 }

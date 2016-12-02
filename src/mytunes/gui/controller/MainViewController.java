@@ -89,7 +89,9 @@ public class MainViewController implements Initializable
     @FXML
     private Button prevButton;
     @FXML
-    private TableColumn<Playlist, String> tablePlaylists;
+    private TableView<Playlist> tablePlaylists;
+    @FXML
+    private TableColumn<Playlist, String> colPlaylist;
 
     @FXML
     public void handleAddSongButton() throws IOException
@@ -197,17 +199,17 @@ public class MainViewController implements Initializable
 
     private void loadPlaylistSongView() throws IOException
     {
-//        Stage primStage = (Stage) tablePlaylists.getScene().getWindow();
-//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/mytunes/gui/view/AddPlaylistView.fxml"));
-//        Parent root = loader.load();
-//
-//        Stage addPlaylistViewStage = new Stage();
-//        addPlaylistViewStage.setScene(new Scene(root));
-//
-//        addPlaylistViewStage.initModality(Modality.WINDOW_MODAL);
-//        addPlaylistViewStage.initOwner(primStage);
-//
-//        addPlaylistViewStage.show();
+        Stage primStage = (Stage) tablePlaylists.getScene().getWindow();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/mytunes/gui/view/AddPlaylistView.fxml"));
+        Parent root = loader.load();
+
+        Stage addPlaylistViewStage = new Stage();
+        addPlaylistViewStage.setScene(new Scene(root));
+
+        addPlaylistViewStage.initModality(Modality.WINDOW_MODAL);
+        addPlaylistViewStage.initOwner(primStage);
+
+        addPlaylistViewStage.show();
 
     }
     

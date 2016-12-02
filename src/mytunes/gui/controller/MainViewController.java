@@ -253,10 +253,23 @@ public class MainViewController implements Initializable
 
         }
 
-        lblSongDuration.setText(selectedSong.getDuration());
-        lblSongPlaying.setText(selectedSong.getTitle());
+        lblSongDuration.setText(songManager.getCurrentlyPlayingSong().getDuration());
+        lblSongPlaying.setText(songManager.getCurrentlyPlayingSong().getTitle());
     }
 
+    public void nextSong()
+    {
+        songManager.playNextSong(songs);
+        processTimeInfo();
+    }
+    
+    public void prevSong()
+    {
+        songManager.playPrevSong(songs);
+         processTimeInfo();
+    }
+    
+    
     @FXML
     private void handleEditSong(ActionEvent event) throws IOException 
     {

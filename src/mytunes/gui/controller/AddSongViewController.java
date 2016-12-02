@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.UUID;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -93,13 +94,14 @@ public class AddSongViewController implements Initializable
     @FXML
     public void addSong()
     {
+        String id = UUID.randomUUID().toString();
         String title = txtTitle.getText();
         String artist = txtArtist.getText();
         String genre = txtGenre.getText();
         String duration = txtDuration.getText();
         String path = txtPath.getText();
 
-        song = new Song(title, artist, genre, duration, 0, path);
+        song = new Song(id, title, artist, genre, duration, 0, path);
         songModel.addSong(song);
         songModel.saveSongData();
         closeWindow();

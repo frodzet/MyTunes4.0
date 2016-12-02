@@ -12,7 +12,7 @@ import java.io.Serializable;
  */
 public class Song implements Serializable{
 
-    private int id;
+    private String id;
     private String title;
     private String artist;
     private String genre;
@@ -23,6 +23,7 @@ public class Song implements Serializable{
     /**
      * The default constructor for the song.
      *
+     * @param id Gets an unique ID.
      * @param title The title of the song.
      * @param artist The artist's name.
      * @param genre The song's genre.
@@ -31,8 +32,9 @@ public class Song implements Serializable{
      * @param path The song path - this is the exact path of the song e.g.
      * C:\\Desktop\\MyMp3File.mp3
      */
-    public Song(String title, String artist, String genre, String duration, int rating, String path)
+    public Song(String id, String title, String artist, String genre, String duration, int rating, String path)
     {
+        this.id = id;
         this.title = title;
         this.artist = artist;
         this.genre = genre;
@@ -46,7 +48,7 @@ public class Song implements Serializable{
      * Gets the id of the song.
      * @return Returns an integer value representing the id of this song.
      */
-    public int getId()
+    public String getId()
     {
         return id;
     }

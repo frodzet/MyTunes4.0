@@ -5,10 +5,14 @@
  */
 package mytunes.gui.model;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mytunes.be.Song;
+import mytunes.dal.SongDAO;
 
 /**
  *
@@ -16,7 +20,10 @@ import mytunes.be.Song;
  */
 public class SongModel {
 
+    private Song contextSong;
     
+    private SongDAO songDAO;
+
     private static SongModel instance;
 
     public static SongModel getInstance()
@@ -30,9 +37,9 @@ public class SongModel {
 
     private SongModel()
     {
+        songDAO = new SongDAO();
     }
-    
-    
+
     ObservableList<Song> songs = FXCollections.observableArrayList();
 
     public void addSong(Song song)
@@ -41,16 +48,64 @@ public class SongModel {
 
     }
 
+    public void editSong(Song contextSong)
+    {
+        for (int i = 0; i < songs.size() - 1; i++)
+        {
+            Song song = songs.get(i);
+            if (song.getTitle() == contextSong.getTitle())
+            {
+                int songIndex = i;
+                song.setTitle(contextSong.getTitle());
+                song.setArtist(contextSong.getArtist());
+            }
+
+        }
+
+    }
+
     public List<Song> getSongs()
     {
         return songs;
     }
-    
+
     public void setSongs()
     {
-        
+
     }
-    
-    
+
+    public Song getContextSong()
+    {
+        return contextSong;
+
+    }
+
+    public void setContextSong(Song contextSong)
+    {
+        this.contextSong = contextSong;
+    }
+
+    public void loadSongData() throws FileNotFoundException
+    {
+        songs.clear();
+        songs.addAll(songDAO.readObjectData("SongsData.dat"));
+    }
+
+    public void saveSongData()
+    {
+        try
+        {
+            ArrayList<Song> songsToSave = new ArrayList<>();
+            for (Song song : songs)
+            {
+                songsToSave.add(song);
+            }
+            songDAO.writeObjectData(songsToSave, "SongsData.dat");
+        }
+        catch (IOException ex)
+        {
+            // TODO: exception handling.
+        }
+    }
 
 }

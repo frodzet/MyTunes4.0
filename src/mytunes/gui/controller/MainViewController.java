@@ -5,17 +5,22 @@
  */
 package mytunes.gui.controller;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.MenuBar;
@@ -76,7 +81,9 @@ public class MainViewController implements Initializable
     @FXML
     private MenuBar menuBar;
     @FXML
-    private Button btnTest;
+    private ContextMenu contextSong;
+    @FXML
+    private Button btnUpdate;
 
     @FXML
     public void handleAddSongButton() throws IOException
@@ -91,7 +98,7 @@ public class MainViewController implements Initializable
     }
 
     @FXML
-    public void handleTableElementDoubleClick(MouseEvent event)
+    public void handleOnMousePressed(MouseEvent event)
     {
         selectedSong = tableSongs.selectionModelProperty().getValue().getSelectedItem();
         if (event.isPrimaryButtonDown() && event.getClickCount() == 2)
@@ -118,6 +125,10 @@ public class MainViewController implements Initializable
             {
                 songManager.playSong(selectedSong, false);
                 lblSongPlaying.setText(selectedSong.getTitle() + " is playing");
+            }
+            else
+            {
+                return;
             }
         }
         else
@@ -156,6 +167,7 @@ public class MainViewController implements Initializable
         colRating.setCellValueFactory(new PropertyValueFactory<>("rating"));
         setSongs();
         tableSongs.setItems(songs);
+        initialLoad();
         isPlaying = false;
     }
 
@@ -244,4 +256,61 @@ public class MainViewController implements Initializable
         lblSongDuration.setText(selectedSong.getDuration());
         lblSongPlaying.setText(selectedSong.getTitle());
     }
+
+    @FXML
+    private void handleEditSong(ActionEvent event) throws IOException 
+    {
+        handleContextSong();
+        Stage primStage = (Stage) tableSongs.getScene().getWindow();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/mytunes/gui/view/EditSongView.fxml"));
+        Parent root = loader.load();
+        
+        
+        EditSongViewController editSongViewController = loader.getController();
+
+        Stage editSongViewStage = new Stage();
+        editSongViewStage.setScene(new Scene(root));
+
+        editSongViewStage.initModality(Modality.WINDOW_MODAL);
+        editSongViewStage.initOwner(primStage);
+
+        editSongViewStage.show();
+    }
+
+    @FXML
+    private void handleDeleteSong(ActionEvent event) {
+    }
+
+    
+    private void handleContextSong(){
+        
+        songModel.setContextSong(selectedSong);
+     
+        
+        
+    }
+
+    @FXML
+    private void handleAdSongToPlaylist(ActionEvent event) {
+    }
+    
+    @FXML
+    private void update(){
+       tableSongs.setItems((ObservableList<Song>) songModel.getSongs());
+    }
+    
+    private void initialLoad()
+    {
+                try
+        {
+            songModel.loadSongData();
+        } catch (FileNotFoundException ex)
+        {
+            //Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+
+   
 }

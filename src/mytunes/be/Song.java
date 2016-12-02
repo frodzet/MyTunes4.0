@@ -5,11 +5,12 @@
  */
 package mytunes.be;
 
+import java.io.Serializable;
 /**
  *
  * @author Simon Birkedal
  */
-public class Song {
+public class Song implements Serializable{
 
     private int id;
     private String title;
@@ -101,5 +102,23 @@ public class Song {
     {
         return rating;
     }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setArtist(String artist) {
+        this.artist = artist;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
+    }
+    
+    
 
 }

@@ -257,6 +257,12 @@ public class MainViewController implements Initializable
         lblSongPlaying.setText(selectedSong.getTitle());
     }
 
+    public void nextSong()
+    {
+        songManager.playNextSong(songs);
+    }
+    
+    
     @FXML
     private void handleEditSong(ActionEvent event) throws IOException 
     {

@@ -1,6 +1,7 @@
 package mytunes.bll;
 
 import java.io.File;
+import javafx.collections.ObservableList;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
@@ -93,4 +94,22 @@ public class SongManager
     {
         return player;
     }
+    
+    
+    public void playNextSong(ObservableList<Song> songs) {
+        for (int i = 0; i < songs.size() - 1; i++) {
+            if (currentSong.getTitle().equals(songs.get(i).getTitle())) {
+                currentSong = songs.get(i + 1);
+
+            }
+
+            if (i == songs.size() - 1) {
+                currentSong = songs.get(i);
+            }
+        }
+        pauseSong();
+        playSong(currentSong, true);
+
+    }
+
 }

@@ -1,20 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ContextMenu?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Menu?>
-<?import javafx.scene.control.MenuBar?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ProgressBar?>
-<?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="592.0" prefWidth="816.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mytunes.gui.controller.MainViewController">
+<AnchorPane id="AnchorPane" prefHeight="592.0" prefWidth="816.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mytunes.gui.controller.MainViewController">
    <children>
       <ProgressBar fx:id="barMediaTimer" layoutX="233.0" layoutY="61.0" minHeight="-Infinity" prefHeight="17.0" prefWidth="351.0" progress="0.0" />
       <TableView fx:id="tableSongs" layoutX="173.0" layoutY="116.0" onMousePressed="#handleOnMousePressed" prefHeight="472.0" prefWidth="634.0" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0">
@@ -66,5 +56,6 @@
       <Label fx:id="lblTimeElapsed" layoutX="184.0" layoutY="61.0" prefHeight="17.0" prefWidth="44.0" textAlignment="CENTER" />
       <Label fx:id="lblSongDuration" layoutX="586.0" layoutY="60.0" prefHeight="17.0" prefWidth="44.0" textAlignment="CENTER" />
       <Button fx:id="btnUpdate" layoutX="51.0" layoutY="102.0" mnemonicParsing="false" onAction="#update" text="Update" />
+      <Button fx:id="nextButton" layoutX="152.0" layoutY="81.0" mnemonicParsing="false" onAction="#nextSong" text="Next" />
    </children>
 </AnchorPane>

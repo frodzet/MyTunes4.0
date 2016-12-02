@@ -253,10 +253,23 @@ public class MainViewController implements Initializable
 
         }
 
-        lblSongDuration.setText(selectedSong.getDuration());
-        lblSongPlaying.setText(selectedSong.getTitle());
+        lblSongDuration.setText(songManager.getCurrentlyPlayingSong().getDuration());
+        lblSongPlaying.setText(songManager.getCurrentlyPlayingSong().getTitle());
     }
 
+    public void nextSong()
+    {
+        songManager.playNextSong(songs);
+        processTimeInfo();
+    }
+    
+    public void prevSong()
+    {
+        songManager.playPrevSong(songs);
+         processTimeInfo();
+    }
+    
+    
     @FXML
     private void handleEditSong(ActionEvent event) throws IOException 
     {
@@ -275,18 +288,19 @@ public class MainViewController implements Initializable
         editSongViewStage.initOwner(primStage);
 
         editSongViewStage.show();
+        
     }
 
     @FXML
     private void handleDeleteSong(ActionEvent event) {
+        tableSongs.getItems().remove(selectedSong);
+                	
     }
 
     
     private void handleContextSong(){
         
         songModel.setContextSong(selectedSong);
-     
-        
         
     }
 
@@ -296,7 +310,7 @@ public class MainViewController implements Initializable
     
     @FXML
     private void update(){
-       tableSongs.setItems((ObservableList<Song>) songModel.getSongs());
+       
     }
     
     private void initialLoad()

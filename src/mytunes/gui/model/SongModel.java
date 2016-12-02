@@ -50,14 +50,21 @@ public class SongModel {
 
     public void editSong(Song contextSong)
     {
-        for (int i = 0; i < songs.size() - 1; i++)
+       
+        for (int i = 0; i < songs.size(); i++)
         {
+            
             Song song = songs.get(i);
-            if (song.getTitle() == contextSong.getTitle())
+            if (song.getId() == contextSong.getId())
             {
-                int songIndex = i;
+                
                 song.setTitle(contextSong.getTitle());
                 song.setArtist(contextSong.getArtist());
+                song.setGenre(contextSong.getGenre());
+                song.setRating(contextSong.getRating());
+                songs.remove(song);
+                songs.add(song);
+                
             }
 
         }

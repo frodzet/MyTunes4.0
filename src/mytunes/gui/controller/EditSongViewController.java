@@ -30,8 +30,7 @@ public class EditSongViewController implements Initializable {
     private TextField txtGenre;
     @FXML
     private TextField txtRating;
-    @FXML
-    private Button btnSave;
+
     @FXML
     private Button btnCancel;
 
@@ -69,6 +68,7 @@ public class EditSongViewController implements Initializable {
         contextSong.setGenre(genre);
         contextSong.setRating(rate);
         songModel.editSong(contextSong);
+        
       closeWindow();
     }
 

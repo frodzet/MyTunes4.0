@@ -40,6 +40,7 @@ public class Song implements Serializable{
         this.rating = rating;
         this.path = path;
     }
+    
 
     /**
      * Gets the id of the song.

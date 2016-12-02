@@ -309,7 +309,7 @@ public class MainViewController implements Initializable
     
     @FXML
     private void update(){
-       tableSongs.setItems((ObservableList<Song>) songModel.getSongs());
+       
     }
     
     private void initialLoad()

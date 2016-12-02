@@ -253,8 +253,8 @@ public class MainViewController implements Initializable
 
         }
 
-        lblSongDuration.setText(selectedSong.getDuration());
-        lblSongPlaying.setText(selectedSong.getTitle());
+        lblSongDuration.setText(songManager.getCurrentlyPlayingSong().getDuration());
+        lblSongPlaying.setText(songManager.getCurrentlyPlayingSong().getTitle());
     }
 
     @FXML
@@ -296,7 +296,7 @@ public class MainViewController implements Initializable
     
     @FXML
     private void update(){
-       tableSongs.setItems((ObservableList<Song>) songModel.getSongs());
+       
     }
     
     private void initialLoad()

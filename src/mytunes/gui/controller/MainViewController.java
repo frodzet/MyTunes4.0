@@ -288,18 +288,19 @@ public class MainViewController implements Initializable
         editSongViewStage.initOwner(primStage);
 
         editSongViewStage.show();
+        
     }
 
     @FXML
     private void handleDeleteSong(ActionEvent event) {
+        tableSongs.getItems().remove(selectedSong);
+                	
     }
 
     
     private void handleContextSong(){
         
         songModel.setContextSong(selectedSong);
-     
-        
         
     }
 

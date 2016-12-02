@@ -62,6 +62,8 @@ public class SongModel {
                 song.setArtist(contextSong.getArtist());
                 song.setGenre(contextSong.getGenre());
                 song.setRating(contextSong.getRating());
+                songs.remove(song);
+                songs.add(song);
                 
             }
 

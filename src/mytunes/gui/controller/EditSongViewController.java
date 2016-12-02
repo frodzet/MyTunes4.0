@@ -68,6 +68,7 @@ public class EditSongViewController implements Initializable {
         contextSong.setGenre(genre);
         contextSong.setRating(rate);
         songModel.editSong(contextSong);
+        
       closeWindow();
     }
 

@@ -1,6 +1,9 @@
 
 # Created by Adamino @ https://www.gitignore.io/api/java,android,netbeans,intellij,windows,csharp,wordpress,drupal,sass,linux,bluej,unity,unrealengine,grunt,yeoman,adobe,c++,bower,coffeescript,composer,eclipse,jetbrains,magento,joomla,laravel,lua,meteorjs,node,kobalt,python,objective-c,rails,swift,visualstudio,umbraco,visualstudiocode,webstorm,xamarinstudio,xcode,sublimetext
 
+
+*.dat
+
 ### Eclipse ###
 
 .metadata

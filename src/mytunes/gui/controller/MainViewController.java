@@ -306,8 +306,7 @@ public class MainViewController implements Initializable
             songModel.loadSongData();
         } catch (FileNotFoundException ex)
         {
-            System.out.println("FUCK YOU");
-            Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
+            //Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
     }

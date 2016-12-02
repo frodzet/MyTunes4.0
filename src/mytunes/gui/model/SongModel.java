@@ -89,14 +89,13 @@ public class SongModel {
     {
         songs.clear();
         songs.addAll(songDAO.readObjectData("SongsData.dat"));
-
     }
 
     public void saveSongData()
     {
         try
         {
-            ArrayList<Song> songsToSave = new ArrayList<Song>();
+            ArrayList<Song> songsToSave = new ArrayList<>();
             for (Song song : songs)
             {
                 songsToSave.add(song);

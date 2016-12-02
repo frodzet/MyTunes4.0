@@ -33,6 +33,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import mytunes.be.Playlist;
 import mytunes.be.Song;
 import mytunes.bll.SongManager;
 import mytunes.gui.model.SongModel;
@@ -74,8 +75,7 @@ public class MainViewController implements Initializable
     private Label lblSongDuration;
     @FXML
     private Label lblTimeElapsed;
-    @FXML
-    private ListView<Song> listPlayList;
+    
     @FXML
     private Slider sliderVolume;
     @FXML
@@ -84,6 +84,12 @@ public class MainViewController implements Initializable
     private ContextMenu contextSong;
     @FXML
     private Button btnUpdate;
+    @FXML
+    private Button nextButton;
+    @FXML
+    private Button prevButton;
+    @FXML
+    private TableColumn<Playlist, String> tablePlaylists;
 
     @FXML
     public void handleAddSongButton() throws IOException
@@ -191,17 +197,17 @@ public class MainViewController implements Initializable
 
     private void loadPlaylistSongView() throws IOException
     {
-        Stage primStage = (Stage) listPlayList.getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/mytunes/gui/view/AddPlaylistView.fxml"));
-        Parent root = loader.load();
-
-        Stage addPlaylistViewStage = new Stage();
-        addPlaylistViewStage.setScene(new Scene(root));
-
-        addPlaylistViewStage.initModality(Modality.WINDOW_MODAL);
-        addPlaylistViewStage.initOwner(primStage);
-
-        addPlaylistViewStage.show();
+//        Stage primStage = (Stage) tablePlaylists.getScene().getWindow();
+//        FXMLLoader loader = new FXMLLoader(getClass().getResource("/mytunes/gui/view/AddPlaylistView.fxml"));
+//        Parent root = loader.load();
+//
+//        Stage addPlaylistViewStage = new Stage();
+//        addPlaylistViewStage.setScene(new Scene(root));
+//
+//        addPlaylistViewStage.initModality(Modality.WINDOW_MODAL);
+//        addPlaylistViewStage.initOwner(primStage);
+//
+//        addPlaylistViewStage.show();
 
     }
     
@@ -257,12 +263,14 @@ public class MainViewController implements Initializable
         lblSongPlaying.setText(songManager.getCurrentlyPlayingSong().getTitle());
     }
 
+    @FXML
     public void nextSong()
     {
         songManager.playNextSong(songs);
         processTimeInfo();
     }
     
+    @FXML
     public void prevSong()
     {
         songManager.playPrevSong(songs);

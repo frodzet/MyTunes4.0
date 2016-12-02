@@ -14,8 +14,7 @@ import mytunes.be.Song;
  *
  * @author Simon Birkedal
  */
-public class SongManager
-{
+public class SongManager {
 
     private Song currentSong;
     private MediaPlayer player;
@@ -25,10 +24,8 @@ public class SongManager
      *
      * @param song The song to be played.
      */
-    public void playSong(Song song, boolean overwrite)
-    {
-        if (currentSong == null || overwrite)
-        {
+    public void playSong(Song song, boolean overwrite) {
+        if (currentSong == null || overwrite) {
             currentSong = song;
             File soundFile = new File(currentSong.getPath());
             Media media = new Media(soundFile.toURI().toString());
@@ -41,75 +38,75 @@ public class SongManager
     /**
      * Pauses the currently playing song.
      */
-    public void pauseSong()
-    {
-        if (currentSong != null)
-        {
+    public void pauseSong() {
+        if (currentSong != null) {
             player.pause();
         }
     }
-
-    /**
-     * Plays the next song on the list.
-     */
-    public void playNextSong()
-    {
-
-    }
-
-    /**
-     * Plays the previous song on the list.
-     */
-    public void playPrevSong()
-    {
-
-    }
-
     /**
      * Gets the currently playing song.
      *
      * @return Returns a song object representing the song currently playing.
      */
-    public Song getCurrentlyPlayingSong()
-    {
+    public Song getCurrentlyPlayingSong() {
         return this.currentSong;
     }
 
     /**
      * Gets the songs length.
+     *
      * @return Returns the length of the song.
      */
-    public Duration getSongLength()
-    {
+    public Duration getSongLength() {
         return player.getTotalDuration();
     }
-    
-    
-    public Duration getSongTimeElapsed()
-    {
+
+    public Duration getSongTimeElapsed() {
         return player.getCurrentTime();
     }
 
-    public MediaPlayer getMediaPlayer()
-    {
+    public MediaPlayer getMediaPlayer() {
         return player;
     }
-    
-    
+
     public void playNextSong(ObservableList<Song> songs) {
+        Song nextSong = null;
         for (int i = 0; i < songs.size() - 1; i++) {
-            if (currentSong.getTitle().equals(songs.get(i).getTitle())) {
-                currentSong = songs.get(i + 1);
+            if (currentSong.getTitle().equals(songs.get(i).getTitle()) && i != songs.size()) {
+                nextSong = songs.get(i + 1);
 
             }
 
-            if (i == songs.size() - 1) {
-                currentSong = songs.get(i);
+            if (nextSong == null) {
+                nextSong = songs.get(0);
+
             }
         }
         pauseSong();
-        playSong(currentSong, true);
+        playSong(nextSong, true);
 
     }
+    
+        public void playPrevSong(ObservableList<Song> songs) {
+        Song prevSong = null;
+        for (int i = songs.size() - 1; i > 0; i--) {
+            if (currentSong.getTitle().equals(songs.get(i).getTitle()) && i != 0) {
+                prevSong = songs.get(i - 1);
+
+            }
+
+            if (prevSong == null) {
+                prevSong = songs.get(0);
+
+            }
+        }
+        pauseSong();
+        playSong(prevSong, true);
+
+    }
+
+  
+
+    
 
 }

@@ -5,11 +5,12 @@
  */
 package mytunes.be;
 
+import java.io.Serializable;
 /**
  *
  * @author Simon Birkedal
  */
-public class Song {
+public class Song implements Serializable{
 
     private int id;
     private String title;

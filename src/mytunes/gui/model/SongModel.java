@@ -71,7 +71,7 @@ public class SongModel {
 
     }
 
-    public List<Song> getSongs()
+    public ObservableList<Song> getSongs()
     {
         return songs;
     }

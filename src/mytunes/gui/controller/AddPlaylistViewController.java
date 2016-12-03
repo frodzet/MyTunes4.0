@@ -7,6 +7,8 @@ package mytunes.gui.controller;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -31,6 +33,7 @@ public class AddPlaylistViewController implements Initializable {
     
     private Playlist playlist;
     private PlaylistModel plModel;
+    private ObservableList<Playlist> playLists = FXCollections.observableArrayList();
 
     /**
      * Initializes the controller class.
@@ -42,15 +45,14 @@ public class AddPlaylistViewController implements Initializable {
     }    
 
     @FXML
-    private void addPlaylist(ActionEvent event)
+    private void addPlaylist()
     {
         String name = txtTitle.getText();
         
         playlist = new Playlist(name);
         plModel.addPlaylist(playlist);
-        closeWindow();
         plModel.updatePlaylistView();
-        
+        closeWindow();   
     }
 
     @FXML

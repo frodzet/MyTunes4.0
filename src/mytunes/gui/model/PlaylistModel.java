@@ -22,7 +22,7 @@ public class PlaylistModel {
     private static PlaylistModel instance;
 
     ObservableList<Playlist> playlists = FXCollections.observableArrayList();
-    ObservableList playlistTitles = FXCollections.observableArrayList();
+    ObservableList<String> playlistTitles = FXCollections.observableArrayList();
 
     public static PlaylistModel getInstance()
     {

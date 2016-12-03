@@ -45,7 +45,6 @@ import mytunes.gui.model.SongModel;
  */
 public class MainViewController implements Initializable
 {
-
     private SongManager songManager;
     private ObservableList<Song> songs = FXCollections.observableArrayList();
     private ObservableList<Playlist> playLists = FXCollections.observableArrayList();
@@ -53,25 +52,24 @@ public class MainViewController implements Initializable
     private Song selectedSong;
     private boolean isPlaying;
     private boolean isMuted;
+    private double sliderVolumeValue;
     private PlaylistModel plModel;
     private Playlist selectedPlaylist;
 
     @FXML
     private Button btnPlay;
     @FXML
-    private TableView<Song> tableSongs;
+    private Button btnPrev;
     @FXML
-    private ProgressBar barMediaTimer;
+    private Button btnNext;
     @FXML
-    private TableColumn<Song, String> colTitle;
+    private ImageView imgMute;
     @FXML
-    private TableColumn<Song, String> colArtist;
+    private ImageView imgPlay;
     @FXML
-    private TableColumn<Song, String> colGenre;
+    private ImageView imgPrev;
     @FXML
-    private TableColumn<Song, Double> colDuration;
-    @FXML
-    private TableColumn<Song, Double> colRating;
+    private ImageView imgNext;
     @FXML
     private TextField txtSearch;
     @FXML
@@ -87,21 +85,24 @@ public class MainViewController implements Initializable
     @FXML
     private ContextMenu contextSong;
     @FXML
-    private Button btnNext;
+    private ProgressBar barMediaTimer;
+    @FXML
+    private TableView<Song> tableSongs;
+    @FXML
+    private TableColumn<Song, String> colTitle;
+    @FXML
+    private TableColumn<Song, String> colArtist;
+    @FXML
+    private TableColumn<Song, String> colGenre;
+    @FXML
+    private TableColumn<Song, Double> colDuration;
+    @FXML
+    private TableColumn<Song, Double> colRating;
     @FXML
     private TableView<Playlist> tablePlaylists;
     @FXML
     private TableColumn<Playlist, String> colPlaylist;
-    @FXML
-    private ImageView imgMute;
-    @FXML
-    private ImageView imgPlay;
-    @FXML
-    private Button btnPrev;
-    @FXML
-    private ImageView imgPrev;
-    @FXML
-    private ImageView imgNext;
+
 
     @FXML
     public void handleAddSongButton() throws IOException
@@ -154,6 +155,7 @@ public class MainViewController implements Initializable
         processTimeInfo();
     }
 
+    @Override
     public void initialize(URL url, ResourceBundle rb)
     {
         songManager = new SongManager();
@@ -175,7 +177,8 @@ public class MainViewController implements Initializable
         {
             songManager.getMediaPlayer().setVolume(sliderVolume.getValue() / 100);
             Image image = new Image(getClass().getResourceAsStream("/mytunes/images/unmute.png"));
-            imgMute.setImage(image);            
+            imgMute.setImage(image);
+            isMuted = false;
         });
     }
     
@@ -291,12 +294,10 @@ public class MainViewController implements Initializable
     @FXML
     public void handleNextSong()
     {
-        // Request tableSongs to get focused whenever 
-        tableSongs.requestFocus();
         TableViewSelectionModel<Song> selectionModel = tableSongs.selectionModelProperty().getValue();
         int selectedSongIndex = selectionModel.getSelectedIndex();
         int tableSongsTotalItems = tableSongs.getItems().size() - 1;
-
+        
         if (selectedSongIndex == tableSongsTotalItems || selectedSong == null)
         {
             selectionModel.clearAndSelect(0);
@@ -310,6 +311,7 @@ public class MainViewController implements Initializable
 
         songManager.pauseSong();
         songManager.playSong(selectedSong, true);
+        songManager.getMediaPlayer().setVolume(sliderVolume.getValue()/100);
 
         changePlayButton(false);
         processTimeInfo();
@@ -318,8 +320,6 @@ public class MainViewController implements Initializable
     @FXML
     public void handlePreviousSong()
     {
-        // Request tableSongs to get focused whenever 
-        tableSongs.requestFocus();
         TableViewSelectionModel<Song> selectionModel = tableSongs.selectionModelProperty().getValue();
         int selectedSongIndex = selectionModel.getSelectedIndex();
         int tableSongsTotalItems = tableSongs.getItems().size() - 1;
@@ -344,6 +344,7 @@ public class MainViewController implements Initializable
 
         songManager.pauseSong();
         songManager.playSong(selectedSong, true);
+        songManager.getMediaPlayer().setVolume(sliderVolume.getValue()/100);
 
         changePlayButton(false);
         processTimeInfo();
@@ -404,21 +405,22 @@ public class MainViewController implements Initializable
         }
 
     }
-
+    
     @FXML
     private void handleMuteSound(MouseEvent event)
     {
-        Image image;
+        Image image;        
         if (!isMuted)
         {
+            sliderVolumeValue = sliderVolume.getValue();
             image = new Image(getClass().getResourceAsStream("/mytunes/images/mute.png"));
-            songManager.getMediaPlayer().setVolume(0.0);
+            sliderVolume.setValue(0.0);
             isMuted = true;            
         }
         else
         {
             image = new Image(getClass().getResourceAsStream("/mytunes/images/unmute.png"));
-            songManager.getMediaPlayer().setVolume(sliderVolume.getValue()/100);
+            sliderVolume.setValue(sliderVolumeValue);
             isMuted = false;
         }
         imgMute.setImage(image);

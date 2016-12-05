@@ -12,6 +12,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import mytunes.gui.model.PlaylistModel;
 import mytunes.gui.model.SongModel;
 
 /**
@@ -21,6 +22,7 @@ import mytunes.gui.model.SongModel;
 public class MyTunes extends Application {
     
     private SongModel songModel;
+    private PlaylistModel playlistModel;
 
     @Override
     public void start(Stage stage) throws Exception
@@ -36,6 +38,7 @@ public class MyTunes extends Application {
             public void handle(final WindowEvent arg0)
             {
                 songModel.getInstance().saveSongData();
+                playlistModel.getInstance().savePlaylistData();
                 System.exit(0);
             }
         });

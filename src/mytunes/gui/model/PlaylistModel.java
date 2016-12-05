@@ -5,12 +5,18 @@
  */
 package mytunes.gui.model;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import mytunes.be.Playlist;
+import mytunes.be.Song;
+import mytunes.dal.PlaylistDAO;
 import mytunes.gui.controller.MainViewController;
 
 /**
@@ -18,7 +24,8 @@ import mytunes.gui.controller.MainViewController;
  * @author James
  */
 public class PlaylistModel {
-
+    
+    private PlaylistDAO playlistDAO;
     private static PlaylistModel instance;
 
     ObservableList<Playlist> playlists = FXCollections.observableArrayList();
@@ -35,6 +42,7 @@ public class PlaylistModel {
 
     private PlaylistModel()
     {
+        playlistDAO = new PlaylistDAO();
     }
 
     public void addPlaylist(Playlist playlist)
@@ -67,5 +75,29 @@ public class PlaylistModel {
     {
 
     }
-
+    
+    public void loadPlaylistData() throws FileNotFoundException
+    {
+        playlists.clear();
+        playlists.addAll(playlistDAO.readObjectData("PlaylistTest.dat"));
+    }
+    
+    public void savePlaylistData()
+    {
+        try
+        {
+            ArrayList<Playlist> playlistToSave = new ArrayList<>();
+            for (Playlist playlist : playlists)
+            {
+                playlistToSave.add(playlist);
+                
+            }
+            playlistDAO.writeObjectData(playlistToSave, "PlaylistTest.dat");
+        }
+        catch (IOException ex)
+        {
+            // TODO: exception handling.
+        }
+    }
+    
 }

@@ -20,7 +20,7 @@ import java.util.List;
 import mytunes.be.Playlist;
 
 /**
- * Class which reads and writes songs from and to a file.
+ * Class which reads and writes playlists from and to a file.
  *
  * @author Simon Birkedal
  */

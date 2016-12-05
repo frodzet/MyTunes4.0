@@ -1,11 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mytunes.be;
 
 import java.io.Serializable;
+import java.util.UUID;
 /**
  *
  * @author Simon Birkedal
@@ -32,9 +28,9 @@ public class Song implements Serializable{
      * @param path The song path - this is the exact path of the song e.g.
      * C:\\Desktop\\MyMp3File.mp3
      */
-    public Song(String id, String title, String artist, String genre, String duration, int rating, String path)
+    public Song(String title, String artist, String genre, String duration, int rating, String path)
     {
-        this.id = id;
+        this.id = UUID.randomUUID().toString();
         this.title = title;
         this.artist = artist;
         this.genre = genre;

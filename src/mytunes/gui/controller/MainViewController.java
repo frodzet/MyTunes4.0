@@ -1,30 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package mytunes.gui.controller;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.ResourceBundle;
-import javafx.beans.InvalidationListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableSet;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.scene.Group;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -38,38 +27,39 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.InputMethodEvent;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import mytunes.be.Playlist;
 import mytunes.be.Song;
 import mytunes.bll.PlaylistManager;
-import mytunes.bll.Search;
 import mytunes.bll.SongManager;
 import mytunes.gui.model.PlaylistModel;
 import mytunes.gui.model.SongModel;
 
 /**
- *
- * @author Simon Birkedal
+ * See ya later
+ * @author Stephan Fuhlendorff, Jacob Enemark, Thomas Hansen, Simon Birkedal
  */
 public class MainViewController implements Initializable
 {
     private SongManager songManager;
+    private PlaylistManager playlistManager;
     private ObservableList<Song> songsLibrary;
     private ObservableList<Song> currentSongsInView;
     private ObservableList<Playlist> playlists;
     private SongModel songModel;
-    private Song selectedSong;
+    private Song selectedSong;     
     private boolean isPlaying;
     private boolean isMuted;
     private double sliderVolumeValue;
     private PlaylistModel playlistModel;
     private Playlist selectedPlaylist;
+    private boolean hasBrowseButtonBeenClicked;
+    
+    private Stage primaryStage;
+    private Stage addSongStage;
+    private Stage addPlaylistStage;
 
     @FXML
     private Button btnPlay;
@@ -117,32 +107,59 @@ public class MainViewController implements Initializable
     private TableView<Playlist> tablePlaylists;
     @FXML
     private TableColumn<Playlist, String> colPlaylist;
-    private PlaylistManager playlistManager;
     @FXML
     private Hyperlink hlinkBrowse;
     @FXML
     private Label lblClearSearch;
 
+    /**
+     * The default contructor for this class.
+     */
     public MainViewController()
     {
         this.songsLibrary = FXCollections.observableArrayList();
         this.currentSongsInView = FXCollections.observableArrayList();
         this.playlists = FXCollections.observableArrayList();
     }
-
-
+    
+    /**
+     * Loads the addSongView.
+     */
     @FXML
-    public void handleAddSongButton() throws IOException
-    {
-        loadAddSongView();
+    public void handleAddSongButton()
+    {        
+        try
+        {
+            loadStage("AddSongView");
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Simon sutter!");
+        }
     }
 
+    /**
+     * Loads the playlistView.
+     */
     @FXML
-    private void handleAddPlaylistButton() throws IOException
+    private void handleAddPlaylistButton()
     {
-        loadPlaylistSongView();
+        try
+        {
+            loadStage("AddPlaylistView");
+        }
+        catch (IOException ex)
+        {
+            Logger.getLogger(MainViewController.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println("Simon sutter!");
+        }
     }
-
+    
+    /**
+     * Handles the selected element whenever a mouse event occours.
+     * @param event The mouse event to listen for.
+     */
     @FXML
     public void handleOnMousePressed(MouseEvent event)
     {
@@ -159,25 +176,39 @@ public class MainViewController implements Initializable
             }
         }
     }
-
+    
+    /**
+     * Plays the selected song from the currently active view table.
+     */
     @FXML
     public void handlePlay()
-    {        
+    {
         // Making sure the song is never null before trying to play a song.
         if (selectedSong == null)
+        {
             tableSongs.selectionModelProperty().get().select(0);
+        }
 
         selectedSong = tableSongs.selectionModelProperty().getValue().getSelectedItem();
         //Play button pressed
         if (!isPlaying)
+        {
             songManager.playSong(selectedSong, false);
+        }
         else
+        {
             songManager.pauseSong();
+        }
 
         changePlayButton(isPlaying);
         processMediaInfo();
     }
-
+    
+    /**
+     * Initializes the default settings.
+     * @param url
+     * @param rb 
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
@@ -191,74 +222,83 @@ public class MainViewController implements Initializable
         colDuration.setCellValueFactory(new PropertyValueFactory<>("duration"));
         colRating.setCellValueFactory(new PropertyValueFactory<>("rating"));
         colPlaylist.setCellValueFactory(new PropertyValueFactory<>("title"));
-        setSongs();
         tableSongs.setItems(songModel.getSongs());
         currentSongsInView = songsLibrary;
         setPlaylists();
         tablePlaylists.setItems(playlists);
         initialLoad();
-        isPlaying = false;
-        sliderVolume.valueProperty().addListener(listener -> 
+        isPlaying = false;        
+        processVolumeData(); 
+        searchOnUpdate();
+    }
+    
+    private void searchOnUpdate()
+    {
+        txtSearch.textProperty().addListener((listener, oldVal, newVal) -> 
+        {
+            ObservableList<Song> searchedSongs = FXCollections.observableArrayList();
+            searchedSongs.clear();
+            ObservableList<Song> allSongsInCurrentView = currentSongsInView;
+            if (selectedPlaylist == null || hasBrowseButtonBeenClicked)
+            {
+                allSongsInCurrentView.setAll(songModel.getSongs());
+            }
+            else
+            {
+                allSongsInCurrentView.setAll(selectedPlaylist.getSongList());
+            }
+            
+            for (Song song : allSongsInCurrentView)
+            {
+                if (song.getTitle().trim().toLowerCase().contains(newVal.trim().toLowerCase())
+                        || song.getArtist().trim().toLowerCase().contains(newVal.trim().toLowerCase())
+                        || song.getGenre().trim().toLowerCase().contains(newVal.trim().toLowerCase())
+                        || String.valueOf(song.getRating()).trim().toLowerCase().contains(newVal.trim().toLowerCase())
+                        && !searchedSongs.contains(song))
+                {
+                    searchedSongs.add(song);
+                }
+            }
+            
+            tableSongs.setItems(searchedSongs);
+        });
+    }
+
+    private void processVolumeData()
+    {
+        sliderVolume.valueProperty().addListener(listener ->
         {
             songManager.getMediaPlayer().setVolume(sliderVolume.getValue() / 100);
             Image image = new Image(getClass().getResourceAsStream("/mytunes/images/unmute.png"));
             imgMute.setImage(image);
             isMuted = false;
         });
-
-        txtSearch.textProperty().addListener((listener, oldVal, newVal) -> {
-            ObservableList<Song> searchedSongs = FXCollections.observableArrayList();
-            searchedSongs.clear();
-            for (Song song : songModel.getSongs())
-            {
-                if (song.getTitle().trim().toLowerCase().contains(newVal) 
-                        || song.getArtist().trim().toLowerCase().contains(newVal) 
-                        || song.getGenre().trim().toLowerCase().contains(newVal)
-                        || String.valueOf(song.getRating()).trim().toLowerCase().contains(newVal)
-                        && !searchedSongs.contains(song))
-                {                        
-                    searchedSongs.add(song);                        
-                }
-            }
-
-            tableSongs.setItems(searchedSongs);
-        });
     }
     
-    private void loadAddSongView() throws IOException
+    /**
+     * Loads a new view on top of the main stage.
+     * @param viewName The view file to be loaded.
+     * @throws IOException 
+     */
+    private void loadStage(String viewName) throws IOException
     {
-        Stage primStage = (Stage) tableSongs.getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/mytunes/gui/view/AddSongView.fxml"));
+        primaryStage = (Stage) tableSongs.getScene().getWindow();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/mytunes/gui/view/" + viewName + ".fxml"));
         Parent root = loader.load();
 
-        AddSongViewController addSongViewController = loader.getController();
+        Stage newStage = new Stage();
+        newStage.setScene(new Scene(root));
 
-        Stage addSongViewStage = new Stage();
-        addSongViewStage.setScene(new Scene(root));
+        newStage.initModality(Modality.WINDOW_MODAL);
+        newStage.initOwner(primaryStage);
 
-        addSongViewStage.initModality(Modality.WINDOW_MODAL);
-        addSongViewStage.initOwner(primStage);
-
-        addSongViewStage.show();
-
+        newStage.show();
     }
-
-    private void loadPlaylistSongView() throws IOException
-    {
-        Stage primStage = (Stage) tablePlaylists.getScene().getWindow();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/mytunes/gui/view/AddPlaylistView.fxml"));
-        Parent root = loader.load();
-
-        Stage addPlaylistViewStage = new Stage();
-        addPlaylistViewStage.setScene(new Scene(root));
-
-        addPlaylistViewStage.initModality(Modality.WINDOW_MODAL);
-        addPlaylistViewStage.initOwner(primStage);
-
-        addPlaylistViewStage.show();
-
-    }
-
+    
+    /**
+     * 
+     * @return 
+     */
     public TableView<Song> getTableSongs()
     {
         return tableSongs;
@@ -268,17 +308,17 @@ public class MainViewController implements Initializable
     {
         songsLibrary.addAll(songModel.getSongs());
     }
-    
+
     public ObservableList<Playlist> getPlaylists()
     {
         return playlists;
     }
-    
+
     public TableView<Playlist> getTablePlaylists()
     {
         return tablePlaylists;
     }
-    
+
     public void setPlaylists()
     {
         playlists = playlistModel.getPlaylists();
@@ -314,12 +354,12 @@ public class MainViewController implements Initializable
                 double timeElapsed = newVal.toMillis() / songManager.getSongLength().toMillis();
                 this.barMediaTimer.setProgress(timeElapsed);
             });
-            
+
             if (!isPlaying)
                 lblSongPlaying.setText(songManager.getCurrentlyPlayingSong().getTitle() + " is paused");
             else
                 lblSongPlaying.setText(songManager.getCurrentlyPlayingSong().getTitle() + " is playing");
-            
+
             lblSongDuration.setText(songManager.getCurrentlyPlayingSong().getDuration());
         }
         finally
@@ -327,14 +367,14 @@ public class MainViewController implements Initializable
 
         }
     }
-
+    
     @FXML
     public void handleNextSong()
     {
         TableViewSelectionModel<Song> selectionModel = tableSongs.selectionModelProperty().getValue();
         int selectedSongIndex = selectionModel.getSelectedIndex();
         int tableSongsTotalItems = tableSongs.getItems().size() - 1;
-        
+
         if (selectedSongIndex == tableSongsTotalItems || selectedSong == null)
         {
             selectionModel.clearAndSelect(0);
@@ -348,7 +388,7 @@ public class MainViewController implements Initializable
 
         songManager.pauseSong();
         songManager.playSong(selectedSong, true);
-        songManager.getMediaPlayer().setVolume(sliderVolume.getValue()/100);
+        songManager.getMediaPlayer().setVolume(sliderVolume.getValue() / 100);
 
         changePlayButton(false);
         processMediaInfo();
@@ -360,7 +400,7 @@ public class MainViewController implements Initializable
         TableViewSelectionModel<Song> selectionModel = tableSongs.selectionModelProperty().getValue();
         int selectedSongIndex = selectionModel.getSelectedIndex();
         int tableSongsTotalItems = tableSongs.getItems().size() - 1;
-        
+
         if (songManager.getSongTimeElapsed().toMillis() <= 3500.0)
         {
             if (selectedSongIndex == 0 || selectedSong == null)
@@ -381,7 +421,7 @@ public class MainViewController implements Initializable
 
         songManager.pauseSong();
         songManager.playSong(selectedSong, true);
-        songManager.getMediaPlayer().setVolume(sliderVolume.getValue()/100);
+        songManager.getMediaPlayer().setVolume(sliderVolume.getValue() / 100);
 
         changePlayButton(false);
         processMediaInfo();
@@ -437,9 +477,11 @@ public class MainViewController implements Initializable
     {
         selectedPlaylist = tablePlaylists.getSelectionModel().getSelectedItem();
         if (selectedPlaylist != null)
+        {
             playlistManager.addSong(selectedPlaylist, selectedSong);
+        }
     }
-    
+
     @FXML
     private void handleOnSelectedPlaylist(MouseEvent event)
     {
@@ -450,16 +492,21 @@ public class MainViewController implements Initializable
             {
                 currentSongsInView.clear();
             }
-            
+
             for (Song song : selectedPlaylist.getSongList())
             {
                 if (!currentSongsInView.contains(song))
+                {
                     currentSongsInView.add(song);
+                }
                 if (!songModel.getSongs().contains(song))
+                {
                     currentSongsInView.remove(song);
+                }
             }
         }
         tableSongs.setItems(currentSongsInView);
+        hasBrowseButtonBeenClicked = false;
     }
 
     private void initialLoad()
@@ -475,17 +522,17 @@ public class MainViewController implements Initializable
         }
         tableSongs.setItems(songModel.getSongs());
     }
-    
+
     @FXML
     private void handleMuteSound(MouseEvent event)
     {
-        Image image;        
+        Image image;
         if (!isMuted)
         {
             sliderVolumeValue = sliderVolume.getValue();
             image = new Image(getClass().getResourceAsStream("/mytunes/images/mute.png"));
             sliderVolume.setValue(0.0);
-            isMuted = true;            
+            isMuted = true;
         }
         else
         {
@@ -493,7 +540,7 @@ public class MainViewController implements Initializable
             sliderVolume.setValue(sliderVolumeValue);
             isMuted = false;
         }
-        
+
         imgMute.setImage(image);
     }
 
@@ -501,13 +548,13 @@ public class MainViewController implements Initializable
     private void handleClearSearch(MouseEvent event)
     {
         txtSearch.setText("");
-        
+
     }
 
     @FXML
     private void handleSetTimeElapsed(MouseEvent event)
     {
-        
+
     }
 
     @FXML
@@ -515,6 +562,7 @@ public class MainViewController implements Initializable
     {
         tableSongs.requestFocus();
         tableSongs.setItems(songModel.getSongs());
-        
+        hasBrowseButtonBeenClicked = true;
+
     }
 }
